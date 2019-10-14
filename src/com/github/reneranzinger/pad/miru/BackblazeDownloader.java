@@ -1,5 +1,6 @@
 package com.github.reneranzinger.pad.miru;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
@@ -14,7 +15,14 @@ public class BackblazeDownloader
     public static void main(String[] args)
             throws ClientProtocolException, IOException, URISyntaxException
     {
+        // target location the files will be downloaded too
         String t_downloadFolder = "./json/";
+        // check if the folder exists, otherwise create it
+        File t_folder = new File(t_downloadFolder);
+        if (!t_folder.exists())
+        {
+            t_folder.mkdirs();
+        }
         Downloader t_downloader = new Downloader();
         // boni
         try
