@@ -8,6 +8,10 @@ public class Skill
     private Integer m_maxTurns = null;
     private Integer m_minTurns = null;
     private Integer m_maxLevel = null;
+    private Integer m_part1 = null;
+    private Integer m_part2 = null;
+    private Integer m_part3 = null;
+    private Integer m_type = null;
 
     public Integer getId()
     {
@@ -67,6 +71,46 @@ public class Skill
     public void setMaxLevel(Integer a_maxLevel)
     {
         this.m_maxLevel = a_maxLevel;
+    }
+
+    public Integer getPart1()
+    {
+        return this.m_part1;
+    }
+
+    public void setPart1(Integer a_part1)
+    {
+        this.m_part1 = a_part1;
+    }
+
+    public Integer getPart2()
+    {
+        return this.m_part2;
+    }
+
+    public void setPart2(Integer a_part2)
+    {
+        this.m_part2 = a_part2;
+    }
+
+    public Integer getPart3()
+    {
+        return this.m_part3;
+    }
+
+    public void setPart3(Integer a_part3)
+    {
+        this.m_part3 = a_part3;
+    }
+
+    public Integer getType()
+    {
+        return this.m_type;
+    }
+
+    public void setType(Integer a_type)
+    {
+        this.m_type = a_type;
     }
 
 }

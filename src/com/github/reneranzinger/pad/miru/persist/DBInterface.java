@@ -14,14 +14,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
-import com.github.reneranzinger.pad.miru.om.AwokenSkill;
-import com.github.reneranzinger.pad.miru.om.Image;
-import com.github.reneranzinger.pad.miru.om.ImageType;
-import com.github.reneranzinger.pad.miru.om.LeaderSkill;
 import com.github.reneranzinger.pad.miru.om.MonsterEntry;
-import com.github.reneranzinger.pad.miru.om.MonsterType;
 import com.github.reneranzinger.pad.miru.om.Skill;
 
 /**
@@ -70,345 +66,168 @@ public class DBInterface
         }
     }
 
-    /**
-     * Get all Skills from the Database
-     *
-     * @return list of skills in the database
-     * @throws SQLException
-     *             thrown if there was a problem with the SQL query
-     */
-    public List<Skill> getSkills() throws SQLException
-    {
-        List<Skill> t_skillList = new ArrayList<>();
-        // create statement and get all skills
-        PreparedStatement t_statement = this.m_connection.prepareStatement("SELECT * FROM skill;");
-        ResultSet t_resultSet = t_statement.executeQuery();
-        // create a list with all skills
-        while (t_resultSet.next())
-        {
-            // create skill and add to result list
-            Skill t_skill = new Skill();
-            t_skill.setId(t_resultSet.getInt("skill_id"));
-            t_skill.setDescription(t_resultSet.getString("description"));
-            t_skill.setMinTurns(t_resultSet.getInt("min_turn"));
-            t_skill.setMaxTurns(t_resultSet.getInt("max_turn"));
-            t_skill.setName(t_resultSet.getString("name"));
-            t_skillList.add(t_skill);
-        }
-        // close result set and statement
-        t_resultSet.close();
-        t_statement.close();
-        return t_skillList;
-    }
-
-    public void updateSkill(Skill a_skill) throws SQLException
-    {
-        PreparedStatement t_statement = this.m_connection.prepareStatement(
-                "UPDATE skill SET name=?, description=?, min_turn=?, max_turn=? WHERE skill_id=?;");
-        t_statement.setString(1, a_skill.getName());
-        t_statement.setString(2, a_skill.getDescription());
-        t_statement.setInt(3, a_skill.getMinTurns());
-        t_statement.setInt(4, a_skill.getMaxTurns());
-        t_statement.setInt(5, a_skill.getId());
-        t_statement.execute();
-        t_statement.close();
-    }
-
     public void insertSkill(Skill a_skill) throws SQLException
     {
         PreparedStatement t_statement = this.m_connection.prepareStatement(
-                "INSERT INTO skill (skill_id, name, description, min_turn, max_turn, max_level) VALUES (?,?,?,?,?,?);");
+                "INSERT INTO skill (skill_id, name, description, min_turn, max_turn, max_level, skill_part_one, skill_part_two, skill_part_three, skill_type) VALUES (?,?,?,?,?,?,?,?,?,?);");
         t_statement.setInt(1, a_skill.getId());
         t_statement.setString(2, a_skill.getName());
-        t_statement.setString(3, a_skill.getDescription());
-        t_statement.setInt(4, a_skill.getMinTurns());
-        t_statement.setInt(5, a_skill.getMaxTurns());
-        t_statement.setInt(6, a_skill.getMaxLevel());
-        t_statement.execute();
-        t_statement.close();
-    }
-
-    public List<MonsterType> getMonsterTypes() throws SQLException
-    {
-        List<MonsterType> t_typeList = new ArrayList<>();
-        // create statement and get all skills
-        PreparedStatement t_statement = this.m_connection
-                .prepareStatement("SELECT * FROM monster_type;");
-        ResultSet t_resultSet = t_statement.executeQuery();
-        // create a list with all skills
-        while (t_resultSet.next())
+        if (a_skill.getDescription() == null)
         {
-            // create skill and add to result list
-            MonsterType t_type = new MonsterType();
-            t_type.setId(t_resultSet.getInt("monster_type_id"));
-            t_type.setName(t_resultSet.getString("name"));
-            t_typeList.add(t_type);
+            t_statement.setNull(3, Types.VARCHAR);
         }
-        // close result set and statement
-        t_resultSet.close();
-        t_statement.close();
-        return t_typeList;
-    }
-
-    public Integer insertMonsterType(MonsterType a_type) throws SQLException
-    {
-        Integer t_resultID = null;
-        PreparedStatement t_statement = this.m_connection
-                .prepareStatement("INSERT INTO monster_type (name) VALUES (?);");
-        t_statement.setString(1, a_type.getName());
-        t_statement.execute();
-        t_statement.close();
-        // get the last ID
-        t_statement = this.m_connection
-                .prepareStatement("SELECT * FROM monster_type WHERE name=?;");
-        t_statement.setString(1, a_type.getName());
-        ResultSet t_resultSet = t_statement.executeQuery();
-        while (t_resultSet.next())
+        else
         {
-            t_resultID = t_resultSet.getInt("monster_type_id");
+            t_statement.setString(3, a_skill.getDescription());
         }
-        return t_resultID;
-    }
-
-    public List<LeaderSkill> getLeaderSkills() throws SQLException
-    {
-        List<LeaderSkill> t_skillList = new ArrayList<>();
-        // create statement and get all skills
-        PreparedStatement t_statement = this.m_connection
-                .prepareStatement("SELECT * FROM leader_skill;");
-        ResultSet t_resultSet = t_statement.executeQuery();
-        // create a list with all skills
-        while (t_resultSet.next())
+        if (a_skill.getMinTurns() == null)
         {
-            // create skill and add to result list
-            LeaderSkill t_skill = new LeaderSkill();
-            t_skill.setId(t_resultSet.getInt("leader_skill_id"));
-            t_skill.setDescription(t_resultSet.getString("description"));
-            t_skill.setName(t_resultSet.getString("name"));
-            t_skillList.add(t_skill);
+            t_statement.setNull(4, Types.INTEGER);
         }
-        // close result set and statement
-        t_resultSet.close();
-        t_statement.close();
-        return t_skillList;
-    }
-
-    public void updateLeaderSkill(LeaderSkill a_skill) throws SQLException
-    {
-        PreparedStatement t_statement = this.m_connection.prepareStatement(
-                "UPDATE leader_skill SET name=?, description=? WHERE Leader_skill_id=?;");
-        t_statement.setString(1, a_skill.getName());
-        t_statement.setString(2, a_skill.getDescription());
-        t_statement.setInt(3, a_skill.getId());
-        t_statement.execute();
-        t_statement.close();
-    }
-
-    public void insertLeaderSkill(LeaderSkill a_skill) throws SQLException
-    {
-        PreparedStatement t_statement = this.m_connection.prepareStatement(
-                "INSERT INTO leader_skill (leader_skill_id, name, description) VALUES (?,?,?);");
-        t_statement.setInt(1, a_skill.getId());
-        t_statement.setString(2, a_skill.getName());
-        t_statement.setString(3, a_skill.getDescription());
-        t_statement.execute();
-        t_statement.close();
-    }
-
-    public List<AwokenSkill> getAwokenSkills() throws SQLException
-    {
-        List<AwokenSkill> t_skillList = new ArrayList<>();
-        // create statement and get all skills
-        PreparedStatement t_statement = this.m_connection
-                .prepareStatement("SELECT * FROM awoken_skill;");
-        ResultSet t_resultSet = t_statement.executeQuery();
-        // create a list with all skills
-        while (t_resultSet.next())
+        else
         {
-            // create skill and add to result list
-            AwokenSkill t_skill = new AwokenSkill();
-            t_skill.setId(t_resultSet.getInt("awoken_skill_id"));
-            t_skill.setDescription(t_resultSet.getString("description"));
-            t_skill.setName(t_resultSet.getString("name"));
-            t_skillList.add(t_skill);
+            t_statement.setInt(4, a_skill.getMinTurns());
         }
-        // close result set and statement
-        t_resultSet.close();
-        t_statement.close();
-        return t_skillList;
-    }
-
-    public void updateAwokenSkill(AwokenSkill a_skill) throws SQLException
-    {
-        PreparedStatement t_statement = this.m_connection.prepareStatement(
-                "UPDATE awoken_skill SET name=?, description=? WHERE awoken_skill_id=?;");
-        t_statement.setString(1, a_skill.getName());
-        t_statement.setString(2, a_skill.getDescription());
-        t_statement.setInt(3, a_skill.getId());
-        t_statement.execute();
-        t_statement.close();
-    }
-
-    public void insertAwokenSkill(AwokenSkill a_skill) throws SQLException
-    {
-        PreparedStatement t_statement = this.m_connection.prepareStatement(
-                "INSERT INTO awoken_skill (awoken_skill_id, name, description) VALUES (?,?,?);");
-        t_statement.setInt(1, a_skill.getId());
-        t_statement.setString(2, a_skill.getName());
-        t_statement.setString(3, a_skill.getDescription());
-        t_statement.execute();
-        t_statement.close();
-    }
-
-    public List<AwokenSkill> getSuperAwokenSkills() throws SQLException
-    {
-        List<AwokenSkill> t_skillList = new ArrayList<>();
-        // create statement and get all skills
-        PreparedStatement t_statement = this.m_connection
-                .prepareStatement("SELECT * FROM super_awoken_skill;");
-        ResultSet t_resultSet = t_statement.executeQuery();
-        // create a list with all skills
-        while (t_resultSet.next())
+        if (a_skill.getMaxTurns() == null)
         {
-            // create skill and add to result list
-            AwokenSkill t_skill = new AwokenSkill();
-            t_skill.setId(t_resultSet.getInt("super_awoken_skill_id"));
-            t_skill.setDescription(t_resultSet.getString("description"));
-            t_skill.setName(t_resultSet.getString("name"));
-            t_skillList.add(t_skill);
+            t_statement.setNull(5, Types.INTEGER);
         }
-        // close result set and statement
-        t_resultSet.close();
-        t_statement.close();
-        return t_skillList;
-    }
-
-    public void updateSuperAwokenSkill(AwokenSkill a_skill) throws SQLException
-    {
-        PreparedStatement t_statement = this.m_connection.prepareStatement(
-                "UPDATE super_awoken_skill SET name=?, description=? WHERE super_awoken_skill_id=?;");
-        t_statement.setString(1, a_skill.getName());
-        t_statement.setString(2, a_skill.getDescription());
-        t_statement.setInt(3, a_skill.getId());
-        t_statement.execute();
-        t_statement.close();
-    }
-
-    public void insertSuperAwokenSkill(AwokenSkill a_skill) throws SQLException
-    {
-        PreparedStatement t_statement = this.m_connection.prepareStatement(
-                "INSERT INTO super_awoken_skill (super_awoken_skill_id, name, description) VALUES (?,?,?);");
-        t_statement.setInt(1, a_skill.getId());
-        t_statement.setString(2, a_skill.getName());
-        t_statement.setString(3, a_skill.getDescription());
-        t_statement.execute();
-        t_statement.close();
-    }
-
-    public List<Image> getImages(ImageType a_type) throws SQLException
-    {
-        List<Image> t_imageList = new ArrayList<>();
-        // create statement and get all skills
-        PreparedStatement t_statement = this.m_connection
-                .prepareStatement("SELECT * FROM image WHERE type=?;");
-        t_statement.setString(1, a_type.getType());
-        ResultSet t_resultSet = t_statement.executeQuery();
-        // create a list with all skills
-        while (t_resultSet.next())
+        else
         {
-            // create skill and add to result list
-            Image t_image = new Image();
-            t_image.setId(t_resultSet.getInt("image_id"));
-            t_image.setImage(t_resultSet.getBytes("image"));
-            t_image.setFileExtension(t_resultSet.getString("image_type"));
-            t_imageList.add(t_image);
+            t_statement.setInt(5, a_skill.getMaxTurns());
         }
-        // close result set and statement
-        t_resultSet.close();
-        t_statement.close();
-        return t_imageList;
-    }
-
-    public void updateImage(Image a_image, ImageType a_type, Integer a_id) throws SQLException
-    {
-        PreparedStatement t_statement = this.m_connection.prepareStatement(
-                "UPDATE image SET image=?, image_type=? WHERE type_id=? AND type=?;");
-        t_statement.setBytes(1, a_image.getImage());
-        t_statement.setString(2, a_image.getFileExtension());
-        t_statement.setString(3, a_type.getType());
-        t_statement.setInt(4, a_id);
-        t_statement.execute();
-        t_statement.close();
-    }
-
-    public void insertImage(Image a_image, ImageType a_type, Integer a_id) throws SQLException
-    {
-        PreparedStatement t_statement = this.m_connection.prepareStatement(
-                "INSERT INTO image (type_id, type, image, image_type) VALUES (?,?,?,?);");
-        t_statement.setInt(1, a_id);
-        t_statement.setString(2, a_type.getType());
-        t_statement.setBytes(3, a_image.getImage());
-        t_statement.setString(4, a_image.getFileExtension());
-        t_statement.execute();
-        t_statement.close();
-    }
-
-    public List<Integer> getMonsters() throws SQLException
-    {
-        List<Integer> t_monsterList = new ArrayList<>();
-        // create statement and get all skills
-        PreparedStatement t_statement = this.m_connection
-                .prepareStatement("SELECT monster_id FROM monster;");
-        ResultSet t_resultSet = t_statement.executeQuery();
-        // create a list with all skills
-        while (t_resultSet.next())
+        if (a_skill.getMaxLevel() == null)
         {
-            // create skill and add to result list
-            t_monsterList.add(t_resultSet.getInt("monster_id"));
+            t_statement.setNull(6, Types.INTEGER);
         }
-        // close result set and statement
-        t_resultSet.close();
+        else
+        {
+            t_statement.setInt(6, a_skill.getMaxLevel());
+        }
+        if (a_skill.getPart1() == null)
+        {
+            t_statement.setNull(7, Types.INTEGER);
+        }
+        else
+        {
+            t_statement.setInt(7, a_skill.getPart1());
+        }
+        if (a_skill.getPart2() == null)
+        {
+            t_statement.setNull(8, Types.INTEGER);
+        }
+        else
+        {
+            t_statement.setInt(8, a_skill.getPart2());
+        }
+        if (a_skill.getPart3() == null)
+        {
+            t_statement.setNull(9, Types.INTEGER);
+        }
+        else
+        {
+            t_statement.setInt(9, a_skill.getPart3());
+        }
+        t_statement.setInt(10, a_skill.getType());
+        t_statement.execute();
         t_statement.close();
-        return t_monsterList;
     }
 
     public void insertMonster(MonsterEntry a_entry) throws SQLException
     {
         PreparedStatement t_statement = this.m_connection.prepareStatement(
-                "INSERT INTO monster ( monster_id, name, rarity, mpoints, limitbreak, hp, atk, rcv, assist, leader_skill_id, skill_id, primary_attribute, secondary_attribute ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? );");
+                "INSERT INTO monster ( monster_id, name, rarity, mpoints, limitbreak, hp, atk, rcv, leader_skill_id, "
+                        + "skill_id, primary_attribute, secondary_attribute, ancestor, max_level, "
+                        + "evo_mat_1, evo_mat_2, evo_mat_3, evo_mat_4, evo_mat_5 ) "
+                        + "VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? );");
         t_statement.setInt(1, a_entry.getId());
         t_statement.setString(2, a_entry.getName());
         t_statement.setInt(3, a_entry.getRarity());
         t_statement.setInt(4, a_entry.getmPoints());
-        t_statement.setBoolean(5, a_entry.isLimitBreaks());
+        if (a_entry.getLimitBreaks() == null)
+        {
+            t_statement.setNull(5, Types.INTEGER);
+        }
+        else
+        {
+            t_statement.setInt(5, a_entry.getLimitBreaks());
+        }
         t_statement.setInt(6, a_entry.getHp());
         t_statement.setInt(7, a_entry.getAtk());
         t_statement.setInt(8, a_entry.getRcv());
-        t_statement.setBoolean(9, a_entry.isAssist());
         if (a_entry.getLeaderSkill() == null)
+        {
+            t_statement.setNull(9, Types.INTEGER);
+        }
+        else
+        {
+            t_statement.setInt(9, a_entry.getLeaderSkill());
+        }
+        if (a_entry.getSkill() == null)
         {
             t_statement.setNull(10, Types.INTEGER);
         }
         else
         {
-            t_statement.setInt(10, a_entry.getLeaderSkill().getId());
+            t_statement.setInt(10, a_entry.getSkill());
         }
-        if (a_entry.getSkill() == null)
-        {
-            t_statement.setNull(11, Types.INTEGER);
-        }
-        else
-        {
-            t_statement.setInt(11, a_entry.getSkill().getId());
-        }
-        t_statement.setString(12, a_entry.getPrimaryAttribute().getInternalName());
+        t_statement.setInt(11, a_entry.getPrimaryAttribute());
         if (a_entry.getSecondaryAttribute() == null)
         {
-            t_statement.setNull(13, Types.VARCHAR);
+            t_statement.setNull(12, Types.INTEGER);
         }
         else
         {
-            t_statement.setString(13, a_entry.getSecondaryAttribute().getInternalName());
+            t_statement.setInt(12, a_entry.getSecondaryAttribute());
+        }
+        if (a_entry.getAncestor() == null)
+        {
+            t_statement.setNull(13, Types.INTEGER);
+        }
+        else
+        {
+            t_statement.setInt(13, a_entry.getAncestor());
+        }
+        t_statement.setInt(14, a_entry.getMaxLevel());
+        if (a_entry.getEvoMaterial1() == null)
+        {
+            t_statement.setNull(15, Types.INTEGER);
+        }
+        else
+        {
+            t_statement.setInt(15, a_entry.getEvoMaterial1());
+        }
+        if (a_entry.getEvoMaterial2() == null)
+        {
+            t_statement.setNull(16, Types.INTEGER);
+        }
+        else
+        {
+            t_statement.setInt(16, a_entry.getEvoMaterial1());
+        }
+        if (a_entry.getEvoMaterial3() == null)
+        {
+            t_statement.setNull(17, Types.INTEGER);
+        }
+        else
+        {
+            t_statement.setInt(17, a_entry.getEvoMaterial1());
+        }
+        if (a_entry.getEvoMaterial4() == null)
+        {
+            t_statement.setNull(18, Types.INTEGER);
+        }
+        else
+        {
+            t_statement.setInt(18, a_entry.getEvoMaterial1());
+        }
+        if (a_entry.getEvoMaterial5() == null)
+        {
+            t_statement.setNull(19, Types.INTEGER);
+        }
+        else
+        {
+            t_statement.setInt(19, a_entry.getEvoMaterial1());
         }
         t_statement.execute();
         t_statement.close();
@@ -419,12 +238,12 @@ public class DBInterface
 
     private void insertMonsterTypes(MonsterEntry a_entry) throws SQLException
     {
-        for (MonsterType t_type : a_entry.getType())
+        for (Integer t_type : a_entry.getType())
         {
             PreparedStatement t_statement = this.m_connection.prepareStatement(
                     "INSERT INTO monster_has_type  (monster_id, monster_type_id) VALUES (?,?);");
             t_statement.setInt(1, a_entry.getId());
-            t_statement.setInt(2, t_type.getId());
+            t_statement.setInt(2, t_type);
             t_statement.execute();
             t_statement.close();
         }
@@ -433,13 +252,13 @@ public class DBInterface
     private void insertMonsterAwokenSkill(MonsterEntry a_entry) throws SQLException
     {
         Integer t_position = 0;
-        for (AwokenSkill t_skill : a_entry.getAwokenSkills())
+        for (Integer t_skill : a_entry.getAwokenSkills())
         {
             t_position++;
             PreparedStatement t_statement = this.m_connection.prepareStatement(
                     "INSERT INTO monster_has_awoken_skill (monster_id, awoken_skill_id, position) VALUES (?,?,?);");
             t_statement.setInt(1, a_entry.getId());
-            t_statement.setInt(2, t_skill.getId());
+            t_statement.setInt(2, t_skill);
             t_statement.setInt(3, t_position);
             t_statement.execute();
             t_statement.close();
@@ -449,13 +268,13 @@ public class DBInterface
     private void insertMonsterSuperAwokenSkill(MonsterEntry a_entry) throws SQLException
     {
         Integer t_position = 0;
-        for (AwokenSkill t_skill : a_entry.getSuperAwokenSkill())
+        for (Integer t_skill : a_entry.getSuperAwokenSkill())
         {
             t_position++;
             PreparedStatement t_statement = this.m_connection.prepareStatement(
-                    "INSERT INTO monster_has_super_awoken_skill (monster_id, super_awoken_skill_id, position) VALUES (?,?,?);");
+                    "INSERT INTO monster_has_super_awoken_skill (monster_id, awoken_skill_id, position) VALUES (?,?,?);");
             t_statement.setInt(1, a_entry.getId());
-            t_statement.setInt(2, t_skill.getId());
+            t_statement.setInt(2, t_skill);
             t_statement.setInt(3, t_position);
             t_statement.execute();
             t_statement.close();
@@ -471,9 +290,66 @@ public class DBInterface
         String t_strDate = t_dateFormat.format(t_date);
         String t_newFile = "pad." + t_strDate + ".sqlite3";
         File t_database = new File(a_targetFolder + t_newFile);
+        // delete the file if its already exists
+        if (t_database.exists())
+        {
+            t_database.delete();
+        }
         // copy the template
         Files.copy(t_databaseTemplate.toPath(), t_database.toPath());
         // return new file name
         return t_newFile;
+    }
+
+    public HashMap<Integer, Boolean> getAwakenings() throws SQLException
+    {
+        HashMap<Integer, Boolean> t_result = new HashMap<>();
+        PreparedStatement t_statement = this.m_connection
+                .prepareStatement("SELECT awoken_skill_id FROM awoken_skill");
+        ResultSet t_set = t_statement.executeQuery();
+        while (t_set.next())
+        {
+            t_result.put(t_set.getInt("awoken_skill_id"), Boolean.TRUE);
+        }
+        return t_result;
+    }
+
+    public HashMap<Integer, Boolean> getTypes() throws SQLException
+    {
+        HashMap<Integer, Boolean> t_result = new HashMap<>();
+        PreparedStatement t_statement = this.m_connection
+                .prepareStatement("SELECT monster_type_id FROM monster_type");
+        ResultSet t_set = t_statement.executeQuery();
+        while (t_set.next())
+        {
+            t_result.put(t_set.getInt("monster_type_id"), Boolean.TRUE);
+        }
+        return t_result;
+    }
+
+    public List<Integer> getCardIds() throws SQLException
+    {
+        List<Integer> t_result = new ArrayList<Integer>();
+        PreparedStatement t_statement = this.m_connection
+                .prepareStatement("SELECT monster_id FROM monster");
+        ResultSet t_set = t_statement.executeQuery();
+        while (t_set.next())
+        {
+            t_result.add(t_set.getInt("monster_id"));
+        }
+        return t_result;
+    }
+
+    public List<Integer> getAwokenSkills() throws SQLException
+    {
+        List<Integer> t_result = new ArrayList<Integer>();
+        PreparedStatement t_statement = this.m_connection
+                .prepareStatement("SELECT awoken_skill_id FROM awoken_skill");
+        ResultSet t_set = t_statement.executeQuery();
+        while (t_set.next())
+        {
+            t_result.add(t_set.getInt("awoken_skill_id"));
+        }
+        return t_result;
     }
 }

@@ -9,20 +9,24 @@ public class MonsterEntry
     private String m_name = null;
     private Integer m_rarity = null;
     private Integer m_mPoints = null;
-    private boolean m_limitBreaks = false;
+    private Integer m_limitBreaks = null;
     private Integer m_hp = null;
     private Integer m_atk = null;
     private Integer m_rcv = null;
-    private Skill m_skill = null;
-    private LeaderSkill m_leaderSkill = null;
-    private List<AwokenSkill> m_awokenSkills = new ArrayList<>();
-    private List<AwokenSkill> m_superAwokenSkill = new ArrayList<>();
-    private boolean m_assist = false;
-    private Attribute m_primaryAttribute = null;
-    private Attribute m_secondaryAttribute = null;
-    private List<MonsterType> m_type = new ArrayList<>();
-    private Image m_imageSmall = null;
-    private Image m_imageLarge = null;
+    private Integer m_skill = null;
+    private Integer m_ancestor = null;
+    private Integer m_leaderSkill = null;
+    private List<Integer> m_awokenSkills = new ArrayList<>();
+    private List<Integer> m_superAwokenSkill = new ArrayList<>();
+    private Integer m_primaryAttribute = null;
+    private Integer m_secondaryAttribute = null;
+    private List<Integer> m_type = new ArrayList<>();
+    private Integer m_evoMaterial1 = null;
+    private Integer m_evoMaterial2 = null;
+    private Integer m_evoMaterial3 = null;
+    private Integer m_evoMaterial4 = null;
+    private Integer m_evoMaterial5 = null;
+    private Integer m_maxLevel = null;
 
     public Integer getId()
     {
@@ -32,6 +36,16 @@ public class MonsterEntry
     public void setId(Integer a_id)
     {
         this.m_id = a_id;
+    }
+
+    public String getName()
+    {
+        return this.m_name;
+    }
+
+    public void setName(String a_name)
+    {
+        this.m_name = a_name;
     }
 
     public Integer getRarity()
@@ -54,12 +68,12 @@ public class MonsterEntry
         this.m_mPoints = a_mPoints;
     }
 
-    public boolean isLimitBreaks()
+    public Integer getLimitBreaks()
     {
         return this.m_limitBreaks;
     }
 
-    public void setLimitBreaks(boolean a_limitBreaks)
+    public void setLimitBreaks(Integer a_limitBreaks)
     {
         this.m_limitBreaks = a_limitBreaks;
     }
@@ -94,114 +108,144 @@ public class MonsterEntry
         this.m_rcv = a_rcv;
     }
 
-    public Skill getSkill()
+    public Integer getSkill()
     {
         return this.m_skill;
     }
 
-    public void setSkill(Skill a_skill)
+    public void setSkill(Integer a_skill)
     {
         this.m_skill = a_skill;
     }
 
-    public LeaderSkill getLeaderSkill()
+    public Integer getAncestor()
+    {
+        return this.m_ancestor;
+    }
+
+    public void setAncestor(Integer a_ancestor)
+    {
+        this.m_ancestor = a_ancestor;
+    }
+
+    public Integer getLeaderSkill()
     {
         return this.m_leaderSkill;
     }
 
-    public void setLeaderSkill(LeaderSkill a_leaderSkill)
+    public void setLeaderSkill(Integer a_leaderSkill)
     {
         this.m_leaderSkill = a_leaderSkill;
     }
 
-    public List<AwokenSkill> getAwokenSkills()
+    public List<Integer> getAwokenSkills()
     {
         return this.m_awokenSkills;
     }
 
-    public void setAwokenSkills(List<AwokenSkill> a_awokenSkills)
+    public void setAwokenSkills(List<Integer> a_awokenSkills)
     {
         this.m_awokenSkills = a_awokenSkills;
     }
 
-    public List<AwokenSkill> getSuperAwokenSkill()
+    public List<Integer> getSuperAwokenSkill()
     {
         return this.m_superAwokenSkill;
     }
 
-    public void setSuperAwokenSkill(List<AwokenSkill> a_superAwokenSkill)
+    public void setSuperAwokenSkill(List<Integer> a_superAwokenSkill)
     {
         this.m_superAwokenSkill = a_superAwokenSkill;
     }
 
-    public boolean isAssist()
-    {
-        return this.m_assist;
-    }
-
-    public void setAssist(boolean a_assist)
-    {
-        this.m_assist = a_assist;
-    }
-
-    public String getName()
-    {
-        return m_name;
-    }
-
-    public void setName(String a_name)
-    {
-        this.m_name = a_name;
-    }
-
-    public Attribute getPrimaryAttribute()
+    public Integer getPrimaryAttribute()
     {
         return this.m_primaryAttribute;
     }
 
-    public Attribute getSecondaryAttribute()
-    {
-        return this.m_secondaryAttribute;
-    }
-
-    public List<MonsterType> getType()
-    {
-        return this.m_type;
-    }
-
-    public Image getImageSmall()
-    {
-        return this.m_imageSmall;
-    }
-
-    public void setImageSmall(Image a_imageSmall)
-    {
-        this.m_imageSmall = a_imageSmall;
-    }
-
-    public Image getImageLarge()
-    {
-        return this.m_imageLarge;
-    }
-
-    public void setImageLarge(Image a_imageLarge)
-    {
-        this.m_imageLarge = a_imageLarge;
-    }
-
-    public void setPrimaryAttribute(Attribute a_primaryAttribute)
+    public void setPrimaryAttribute(Integer a_primaryAttribute)
     {
         this.m_primaryAttribute = a_primaryAttribute;
     }
 
-    public void setSecondaryAttribute(Attribute a_secondaryAttribute)
+    public Integer getSecondaryAttribute()
+    {
+        return this.m_secondaryAttribute;
+    }
+
+    public void setSecondaryAttribute(Integer a_secondaryAttribute)
     {
         this.m_secondaryAttribute = a_secondaryAttribute;
     }
 
-    public void setType(List<MonsterType> a_type)
+    public List<Integer> getType()
+    {
+        return this.m_type;
+    }
+
+    public void setType(List<Integer> a_type)
     {
         this.m_type = a_type;
+    }
+
+    public Integer getEvoMaterial1()
+    {
+        return this.m_evoMaterial1;
+    }
+
+    public void setEvoMaterial1(Integer a_evoMaterial1)
+    {
+        this.m_evoMaterial1 = a_evoMaterial1;
+    }
+
+    public Integer getEvoMaterial2()
+    {
+        return this.m_evoMaterial2;
+    }
+
+    public void setEvoMaterial2(Integer a_evoMaterial2)
+    {
+        this.m_evoMaterial2 = a_evoMaterial2;
+    }
+
+    public Integer getEvoMaterial3()
+    {
+        return this.m_evoMaterial3;
+    }
+
+    public void setEvoMaterial3(Integer a_evoMaterial3)
+    {
+        this.m_evoMaterial3 = a_evoMaterial3;
+    }
+
+    public Integer getEvoMaterial4()
+    {
+        return this.m_evoMaterial4;
+    }
+
+    public void setEvoMaterial4(Integer a_evoMaterial4)
+    {
+        this.m_evoMaterial4 = a_evoMaterial4;
+    }
+
+    public Integer getEvoMaterial5()
+    {
+        return this.m_evoMaterial5;
+    }
+
+    public void setEvoMaterial5(Integer a_evoMaterial5)
+    {
+        this.m_evoMaterial5 = a_evoMaterial5;
+    }
+
+    public Integer getMaxLevel()
+    {
+        return this.m_maxLevel;
+    }
+
+    public void setMaxLevel(Integer a_maxLevel)
+    {
+        this.m_maxLevel = a_maxLevel;
     }
 
 }

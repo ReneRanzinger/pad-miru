@@ -8,7 +8,7 @@ import org.apache.http.client.ClientProtocolException;
 
 import com.github.reneranzinger.pad.miru.util.Downloader;
 
-public class BackblazeDownloader
+public class BackblazeJsonDownloader
 {
     public static final String BASE_URL = "https://f002.backblazeb2.com/file/miru-data/paddata/processed/";
 
