@@ -1,4 +1,4 @@
-package com.github.reneranzinger.pad.miru;
+package com.github.reneranzinger.pad.miru.scripts;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -18,14 +18,22 @@ public class MiruFileProcessor
     {
         String t_targetFolder = "./database/";
         String t_jsonFolder = "./json/";
+        String t_databaseTemplateFile = "./database/puzzledragon-template.sqlite3";
+        MiruFileProcessor.process(t_targetFolder, t_jsonFolder, t_databaseTemplateFile, true);
+    }
+
+    public static void process(String a_databaseTargetFolder, String a_folderJson,
+            String a_databaseTemplate, Boolean a_timeStampDatabase) throws IOException,
+            ClassNotFoundException, SQLException, ParseException, MiruFileException
+    {
         // create a new empty database from the template
-        String t_fileName = DBInterface.copyDatabase("./database/puzzledragon-template.sqlite3",
-                t_targetFolder);
+        String t_fileName = DBInterface.copyDatabase(a_databaseTemplate, a_databaseTargetFolder,
+                a_timeStampDatabase);
         // open new database
-        DBInterface t_db = new DBInterface(t_targetFolder + t_fileName);
+        DBInterface t_db = new DBInterface(a_databaseTargetFolder + t_fileName);
         // fill database
         MiruProcessor t_processor = new MiruProcessor();
-        t_processor.process(t_jsonFolder, t_db);
+        t_processor.process(a_folderJson, t_db);
     }
 
 }

@@ -1,4 +1,4 @@
-package com.github.reneranzinger.pad.miru;
+package com.github.reneranzinger.pad.miru.scripts;
 
 import java.io.File;
 import java.io.IOException;

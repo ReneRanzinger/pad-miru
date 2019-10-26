@@ -8,6 +8,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Types;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -26,6 +27,7 @@ import com.github.reneranzinger.pad.miru.om.Skill;
  */
 public class DBInterface
 {
+    public static final String DEFAULT_DATABASE = "monster_book.sqlite3";
     // connection object that can be used to generate statements
     private Connection m_connection = null;
 
@@ -48,6 +50,9 @@ public class DBInterface
         String t_url = "jdbc:sqlite:" + a_databaseFilePath;
         // create a connection to the database
         this.m_connection = DriverManager.getConnection(t_url);
+        // set the connection to support cascade foreign keys
+        Statement t_statement = this.m_connection.createStatement();
+        t_statement.execute("PRAGMA foreign_keys = ON");
     }
 
     /**
@@ -174,7 +179,7 @@ public class DBInterface
         t_statement.setInt(11, a_entry.getPrimaryAttribute());
         if (a_entry.getSecondaryAttribute() == null)
         {
-            t_statement.setNull(12, Types.INTEGER);
+            t_statement.setInt(12, -1);
         }
         else
         {
@@ -281,14 +286,19 @@ public class DBInterface
         }
     }
 
-    public static String copyDatabase(String a_sourceFile, String a_targetFolder) throws IOException
+    public static String copyDatabase(String a_sourceFile, String a_targetFolder,
+            Boolean a_timeStampDatabase) throws IOException
     {
         File t_databaseTemplate = new File(a_sourceFile);
         // create the new file with a timestamp
-        Date t_date = Calendar.getInstance().getTime();
-        DateFormat t_dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        String t_strDate = t_dateFormat.format(t_date);
-        String t_newFile = "pad." + t_strDate + ".sqlite3";
+        String t_newFile = DBInterface.DEFAULT_DATABASE;
+        if (a_timeStampDatabase)
+        {
+            Date t_date = Calendar.getInstance().getTime();
+            DateFormat t_dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            String t_strDate = t_dateFormat.format(t_date);
+            t_newFile = "monster_book." + t_strDate + ".sqlite3";
+        }
         File t_database = new File(a_targetFolder + t_newFile);
         // delete the file if its already exists
         if (t_database.exists())

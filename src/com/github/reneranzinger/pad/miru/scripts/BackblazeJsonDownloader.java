@@ -1,4 +1,4 @@
-package com.github.reneranzinger.pad.miru;
+package com.github.reneranzinger.pad.miru.scripts;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,8 +17,14 @@ public class BackblazeJsonDownloader
     {
         // target location the files will be downloaded too
         String t_downloadFolder = "./json/";
+        BackblazeJsonDownloader.process(t_downloadFolder);
+    }
+
+    public static void process(String a_downloadFolder)
+            throws ClientProtocolException, IOException, URISyntaxException
+    {
         // check if the folder exists, otherwise create it
-        File t_folder = new File(t_downloadFolder);
+        File t_folder = new File(a_downloadFolder);
         if (!t_folder.exists())
         {
             t_folder.mkdirs();
@@ -28,7 +34,7 @@ public class BackblazeJsonDownloader
         try
         {
             t_downloader.downloadFile(BASE_URL + "na_bonuses.json",
-                    t_downloadFolder + "na_bonuses.json");
+                    a_downloadFolder + "na_bonuses.json");
         }
         catch (Exception e)
         {
@@ -39,7 +45,7 @@ public class BackblazeJsonDownloader
         try
         {
             t_downloader.downloadFile(BASE_URL + "na_cards.json",
-                    t_downloadFolder + "na_cards.json");
+                    a_downloadFolder + "na_cards.json");
         }
         catch (Exception e)
         {
@@ -50,7 +56,7 @@ public class BackblazeJsonDownloader
         try
         {
             t_downloader.downloadFile(BASE_URL + "na_dungeons.json",
-                    t_downloadFolder + "na_dungeons.json");
+                    a_downloadFolder + "na_dungeons.json");
         }
         catch (Exception e)
         {
@@ -61,7 +67,7 @@ public class BackblazeJsonDownloader
         try
         {
             t_downloader.downloadFile(BASE_URL + "na_enemies.json",
-                    t_downloadFolder + "na_enemies.json");
+                    a_downloadFolder + "na_enemies.json");
         }
         catch (Exception e)
         {
@@ -72,7 +78,7 @@ public class BackblazeJsonDownloader
         try
         {
             t_downloader.downloadFile(BASE_URL + "na_enemy_skills.json",
-                    t_downloadFolder + "na_enemy_skills.json");
+                    a_downloadFolder + "na_enemy_skills.json");
         }
         catch (Exception e)
         {
@@ -83,7 +89,7 @@ public class BackblazeJsonDownloader
         try
         {
             t_downloader.downloadFile(BASE_URL + "na_exchange.json",
-                    t_downloadFolder + "na_exchange.json");
+                    a_downloadFolder + "na_exchange.json");
         }
         catch (Exception e)
         {
@@ -94,7 +100,7 @@ public class BackblazeJsonDownloader
         try
         {
             t_downloader.downloadFile(BASE_URL + "na_raw_cards.json",
-                    t_downloadFolder + "na_raw_cards.json");
+                    a_downloadFolder + "na_raw_cards.json");
         }
         catch (Exception e)
         {
@@ -105,7 +111,7 @@ public class BackblazeJsonDownloader
         try
         {
             t_downloader.downloadFile(BASE_URL + "na_skills.json",
-                    t_downloadFolder + "na_skills.json");
+                    a_downloadFolder + "na_skills.json");
         }
         catch (Exception e)
         {
