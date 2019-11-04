@@ -13,7 +13,6 @@ import org.apache.http.client.ClientProtocolException;
 import org.json.simple.parser.ParseException;
 
 import com.github.reneranzinger.pad.miru.persist.DBInterface;
-import com.github.reneranzinger.pad.miru.scripts.BackblazeJsonDownloader;
 import com.github.reneranzinger.pad.miru.scripts.BackblazePortraitDownloader;
 import com.github.reneranzinger.pad.miru.scripts.MiruFileProcessor;
 import com.github.reneranzinger.pad.miru.scripts.PortraitArchiver;
@@ -37,7 +36,7 @@ public class MiruUpdater
         File t_folder = new File(t_folderJson);
         t_folder.mkdirs();
         // download json files into the folder
-        BackblazeJsonDownloader.process(t_folderJson);
+        // BackblazeJsonDownloader.process(t_folderJson);
         System.out.println("Download JSON files finished");
 
         System.out.println("Process JSON files to create database ...");

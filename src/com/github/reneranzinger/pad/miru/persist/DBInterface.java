@@ -18,6 +18,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import com.github.reneranzinger.pad.miru.om.Bonus;
+import com.github.reneranzinger.pad.miru.om.Dungeon;
+import com.github.reneranzinger.pad.miru.om.Floor;
 import com.github.reneranzinger.pad.miru.om.MonsterEntry;
 import com.github.reneranzinger.pad.miru.om.Skill;
 
@@ -361,5 +364,168 @@ public class DBInterface
             t_result.add(t_set.getInt("awoken_skill_id"));
         }
         return t_result;
+    }
+
+    public void insertBonus(Bonus a_bonus) throws SQLException
+    {
+        PreparedStatement t_statement = this.m_connection.prepareStatement(
+                "INSERT INTO bonus ( bonus_type_id, start_date, end_date, player_group, starter, name, value, message, egg_machine_id, dungeon_id ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ); ;");
+        t_statement.setInt(1, a_bonus.getBonusTypeId());
+        t_statement.setDate(2, new java.sql.Date(a_bonus.getStartTime().getTime()));
+        t_statement.setDate(3, new java.sql.Date(a_bonus.getEndTime().getTime()));
+        if (a_bonus.getGroup() == null)
+        {
+            t_statement.setNull(4, Types.VARCHAR);
+        }
+        else
+        {
+            t_statement.setString(4, a_bonus.getGroup());
+        }
+        t_statement.setBoolean(5, a_bonus.getStarter());
+        t_statement.setString(6, a_bonus.getName());
+        if (a_bonus.getValue() == null)
+        {
+            t_statement.setNull(7, Types.VARCHAR);
+        }
+        else
+        {
+            t_statement.setString(7, a_bonus.getValue());
+        }
+        if (a_bonus.getMessage() == null)
+        {
+            t_statement.setNull(8, Types.VARCHAR);
+        }
+        else
+        {
+            t_statement.setString(8, a_bonus.getMessage());
+        }
+        if (a_bonus.getEggMachineId() == null)
+        {
+            t_statement.setNull(9, Types.INTEGER);
+        }
+        else
+        {
+            t_statement.setInt(9, a_bonus.getEggMachineId());
+        }
+        if (a_bonus.getDungeonId() == null)
+        {
+            t_statement.setNull(10, Types.INTEGER);
+        }
+        else
+        {
+            t_statement.setInt(10, a_bonus.getDungeonId());
+        }
+        t_statement.execute();
+        t_statement.close();
+        Integer t_id = this.getLastId();
+        if (a_bonus.getDungeonId() != null)
+        {
+            this.insertDungeonHasBonus(a_bonus.getDungeonId(), a_bonus.getFloorNumber(), t_id);
+        }
+    }
+
+    private void insertDungeonHasBonus(Integer a_dungeonId, Integer a_floorNumber,
+            Integer a_bonusId) throws SQLException
+    {
+        PreparedStatement t_statement = this.m_connection.prepareStatement(
+                "INSERT INTO dungeon_has_bonus ( dungeon_id, bonus_id, floor_number ) VALUES ( ?, ?, ?);");
+        t_statement.setInt(1, a_dungeonId);
+        t_statement.setInt(2, a_bonusId);
+        if (a_floorNumber == null)
+        {
+            t_statement.setNull(3, Types.INTEGER);
+        }
+        else
+        {
+            t_statement.setInt(3, a_floorNumber);
+        }
+        t_statement.execute();
+        t_statement.close();
+    }
+
+    public void insertDungeon(Dungeon a_dungeon) throws SQLException
+    {
+        PreparedStatement t_statement = this.m_connection.prepareStatement(
+                "INSERT INTO dungeon ( dungeon_id, name, type, alt_type, one_time, repeat_day, comment, comment_value ) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?);");
+        t_statement.setInt(1, a_dungeon.getId());
+        t_statement.setString(2, a_dungeon.getName());
+        if (a_dungeon.getType() == null)
+        {
+            t_statement.setNull(3, Types.VARCHAR);
+        }
+        else
+        {
+            t_statement.setString(3, a_dungeon.getType());
+        }
+        t_statement.setString(4, a_dungeon.getAltType());
+        t_statement.setBoolean(5, a_dungeon.getOneTime());
+        if (a_dungeon.getRepeatDay() == null)
+        {
+            t_statement.setNull(6, Types.VARCHAR);
+        }
+        else
+        {
+            t_statement.setString(6, a_dungeon.getRepeatDay());
+        }
+        if (a_dungeon.getComment() == null)
+        {
+            t_statement.setNull(7, Types.VARCHAR);
+        }
+        else
+        {
+            t_statement.setString(7, a_dungeon.getComment());
+        }
+        if (a_dungeon.getCommentValue() == null)
+        {
+            t_statement.setNull(8, Types.INTEGER);
+        }
+        else
+        {
+            t_statement.setInt(8, a_dungeon.getCommentValue());
+        }
+        t_statement.execute();
+        t_statement.close();
+        for (Floor t_floor : a_dungeon.getFloors())
+        {
+            this.insertFloor(t_floor, a_dungeon.getId());
+        }
+    }
+
+    private void insertFloor(Floor a_floor, Integer a_dungeonId) throws SQLException
+    {
+        PreparedStatement t_statement = this.m_connection.prepareStatement(
+                "INSERT INTO floor ( dungeon_id, number, name, waves, stamina ) VALUES ( ?, ?, ?, ?, ?);");
+        t_statement.setInt(1, a_dungeonId);
+        t_statement.setInt(2, a_floor.getNumber());
+        t_statement.setString(3, a_floor.getName());
+        t_statement.setInt(4, a_floor.getWaves());
+        t_statement.setInt(5, a_floor.getStamina());
+        t_statement.execute();
+        t_statement.close();
+        Integer t_id = this.getLastId();
+        for (Integer t_monsterId : a_floor.getDrops())
+        {
+            this.insertDrop(t_id, t_monsterId);
+        }
+    }
+
+    private void insertDrop(Integer a_floorId, Integer a_monsterId) throws SQLException
+    {
+        PreparedStatement t_statement = this.m_connection.prepareStatement(
+                "INSERT INTO floor_drops_monster ( floor_id, monster_id ) VALUES ( ?, ?);");
+        t_statement.setInt(1, a_floorId);
+        t_statement.setInt(2, a_monsterId);
+        t_statement.execute();
+        t_statement.close();
+    }
+
+    private Integer getLastId() throws SQLException
+    {
+        PreparedStatement t_statement = this.m_connection
+                .prepareStatement("SELECT last_insert_rowid();");
+        ResultSet t_resultSet = t_statement.executeQuery();
+        t_resultSet.next();
+        int t_id = t_resultSet.getInt(1);
+        return t_id;
     }
 }

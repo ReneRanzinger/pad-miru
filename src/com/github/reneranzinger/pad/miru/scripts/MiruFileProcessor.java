@@ -17,7 +17,7 @@ public class MiruFileProcessor
             ParseException, MiruFileException, URISyntaxException
     {
         String t_targetFolder = "./database/";
-        String t_jsonFolder = "./json/";
+        String t_jsonFolder = "D:\\Java\\MiruFiles\\2019-10-26\\json/";
         String t_databaseTemplateFile = "./database/puzzledragon-template.sqlite3";
         MiruFileProcessor.process(t_targetFolder, t_jsonFolder, t_databaseTemplateFile, true);
     }
