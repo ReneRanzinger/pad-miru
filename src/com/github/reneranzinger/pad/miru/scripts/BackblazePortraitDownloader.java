@@ -36,7 +36,7 @@ public class BackblazePortraitDownloader
         }
         Downloader t_downloader = new Downloader();
         DBInterface t_db = new DBInterface(a_databaseFile);
-        List<Integer> t_listCard = t_db.getCardIds();
+        List<Integer> t_listCard = t_db.getMonsterIds();
         for (Integer t_id : t_listCard)
         {
             String t_fileName = a_folderName + t_id.toString() + ".png";

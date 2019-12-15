@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.nio.file.StandardCopyOption;
 
+import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.config.RequestConfig;
@@ -66,6 +67,23 @@ public class Downloader
             this.log("Error:Unable to download file: " + a_url + " (" + e.getMessage() + ")");
             this.reconnect();
             return false;
+        }
+    }
+
+    public Header[] getLastModified(String a_url)
+    {
+        try
+        {
+            HttpGet t_httpGet = new HttpGet(a_url);
+            CloseableHttpResponse t_response = this.m_httpclient.execute(t_httpGet);
+            Header[] t_headers = t_response.getHeaders("X-Bz-Upload-Timestamp");
+            t_response.close();
+            return t_headers;
+        }
+        catch (Exception e)
+        {
+            this.log("Error:Unable to download file: " + a_url + " (" + e.getMessage() + ")");
+            return null;
         }
     }
 
